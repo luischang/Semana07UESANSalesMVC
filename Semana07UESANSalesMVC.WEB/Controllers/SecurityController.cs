@@ -13,5 +13,19 @@ namespace Semana07UESANSalesMVC.WEB.Controllers
         {
             return View();
         }
+
+        public IActionResult Signin(string correo, string clave) 
+        {
+            if (correo == "admin@uesan.com" && clave == "12345678")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else {
+                return View("Login");
+            }
+        }
+
+
+
     }
 }
