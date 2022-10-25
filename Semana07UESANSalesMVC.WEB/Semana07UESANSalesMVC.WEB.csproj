@@ -11,14 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Finanzas\Controllers\" />
     <Folder Include="Areas\Finanzas\Data\" />
     <Folder Include="Areas\Finanzas\Models\" />
-    <Folder Include="Areas\Finanzas\Views\" />
-    <Folder Include="Areas\Marketing\Controllers\" />
     <Folder Include="Areas\Marketing\Data\" />
     <Folder Include="Areas\Marketing\Models\" />
-    <Folder Include="Areas\Marketing\Views\" />
   </ItemGroup>
 
 </Project>
