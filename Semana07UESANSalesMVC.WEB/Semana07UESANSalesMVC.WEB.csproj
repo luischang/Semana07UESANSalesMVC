@@ -13,8 +13,6 @@
   <ItemGroup>
     <Folder Include="Areas\Finanzas\Data\" />
     <Folder Include="Areas\Finanzas\Models\" />
-    <Folder Include="Areas\Marketing\Data\" />
-    <Folder Include="Areas\Marketing\Models\" />
   </ItemGroup>
 
 </Project>
