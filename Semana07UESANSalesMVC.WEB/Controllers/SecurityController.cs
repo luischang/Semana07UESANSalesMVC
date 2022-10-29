@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Semana07UESANSalesMVC.WEB.Services;
+using Semana07UESANSalesMVC.WEB.ViewModels;
 
 namespace Semana07UESANSalesMVC.WEB.Controllers
 {
@@ -14,15 +16,33 @@ namespace Semana07UESANSalesMVC.WEB.Controllers
             return View();
         }
 
-        public IActionResult Signin(string correo, string clave) 
+        public async Task<IActionResult> Signin(string correo, string clave) 
         {
-            if (correo == "admin@uesan.com" && clave == "12345678")
+            var userLogin = new UsersAuthenticationViewModel() 
             {
-                return RedirectToAction("Index", "Home");
-            }
-            else {
-                return View("Login");
-            }
+                Email = correo,
+                Password = clave
+            };
+            var auth = await UsersService.Login(userLogin);
+
+            if (auth == null)
+                return RedirectToAction("Login");
+
+            var roleCode = auth.RoleCode;
+
+            if (roleCode == "FINANCE")
+                return RedirectToAction("Index", "Home", new { Area = "Finanzas" });
+            else if(roleCode == "MARKETING")
+                return RedirectToAction("Index", "Home", new { Area = "Marketing" });
+            else
+                return RedirectToAction("Login");
+            //if (correo == "admin@uesan.com" && clave == "12345678")
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+            //else {
+            //    return View("Login");
+            //}
         }
 
 
