@@ -1,0 +1,53 @@
+﻿@using Semana07UESANSalesMVC.WEB.ViewModels
+@{
+    var customers = ViewBag.CustomerList as IEnumerable<CustomerViewModel>;
+}
+<table class="table table-striped" id="tbListadoCliente">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Ciudad</th>
+            <th>País</th>
+            <th>Teléfono</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in customers)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.City</td>
+                <td>@item.Country</td>
+                <td>@item.Phone</td>
+                <td>
+                    <button class="btn btn-warning btnEditarCliente">Editar</button>
+                    <button class="btn btn-danger btnEliminarCliente">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    loadDatatable();
+    function loadDatatable(){
+        //$("#tbListadoCliente").DataTable();
+        let table = $("#tbListadoCliente").DataTable({
+            lengthChange: false,
+            buttons: ['copy', 'excel', 'pdf', 'colvis', 'print']
+
+        });
+
+        table.buttons().container()
+            .insertBefore("#tbListadoCliente_filter");
+    }
+
+
+
+</script>
