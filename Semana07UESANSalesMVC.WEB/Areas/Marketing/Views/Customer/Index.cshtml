@@ -28,7 +28,7 @@
                                 <input type="text" class="form-control" id="txtNombre" />
                             </div>
                         </div>
-                         <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Apellidos</label>
                                 <input type="text" class="form-control" id="txtApellido" />
@@ -61,6 +61,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnGuardarCliente">Guardar</button>
+                <input type="hidden" value="-1" id="hidIdCliente" />
             </div>
         </div>
     </div>
@@ -68,37 +69,111 @@
 
 
 <div id="divListadoClientes">
-
 </div>
 
 
 <script>
 
-    $("#btnGuardarCliente").click(function ()
-    { 
-        let vIdCliente = -1;
+    $("#divListadoClientes").on('click', '.btnEditarCliente', function () {
+        let vIdCliente = $(this).attr('data-id');
+        $("#hidIdCliente").val(vIdCliente);
+        var myModal = new bootstrap.Modal(document.getElementById('modalRegistroCliente'));
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("Obtener","Customer", new {Area="Marketing"})',
+            cache: false,
+            data: { id: vIdCliente },
+            success: function (objCliente){
+                console.log("El valor de objCliente es: " + JSON.stringify(objCliente))
+                $("#txtNombre").val(objCliente.firstName);
+                $("#txtApellido").val(objCliente.lastName);
+                $("#txtCiudad").val(objCliente.city);
+                $("#txtPais").val(objCliente.country);
+                $("#txtTelefono").val(objCliente.phone);
+                myModal.show();
+            }
+        });
+
+
+
+    });
+
+    $("#divListadoClientes").on('click', '.btnEliminarCliente', function () {
+         let vIdCliente = $(this).attr('data-id');
+         if(confirm("¿Está seguro de eliminar el cliente?"))
+         {
+            $.ajax({
+               type: "DELETE",
+               url: '@Url.Action("Eliminar","Customer", new {Area = "Marketing"})',
+               data: { id: vIdCliente },
+               cache:false,
+               success: function(exito) {
+                    if(exito){
+                        alert("Se eliminó correctamente");
+                        CargarListadoCliente();
+                    }else {
+                        alert("No se puede eliminar al cliente ya que cuenta con ordenes de compra");
+                    }                    
+               }
+            });
+         }
+
+    });
+
+
+    $("#btnGuardarCliente").click(function () {
+        let vIdCliente = $("#hidIdCliente").val();
         let vNombre = $("#txtNombre").val();
         let vApellido = $("#txtApellido").val();
         let vPais = $("#txtPais").val();
         let vCiudad = $("#txtCiudad").val();
         let vTelefono = $("#txtTelefono").val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Guardar","Customer",new {Area="Marketing"})',
+            cache: false,
+            data: {
+                idCliente: vIdCliente,
+                nombre: vNombre,
+                apellido: vApellido,
+                pais: vPais,
+                ciudad: vCiudad,
+                telefono: vTelefono
+            },
+            success: function (valorRespuesta) {
+                if (valorRespuesta) {
+                    $("#modalRegistroCliente").modal('hide');
+                    alert("Se registró correctamente.....");
+                    CargarListadoCliente();
+                } else {
+                    alert("Ocurrió un error al registrar el cliente...");
+                }
+            },
+            error: function () {
+                alert("Ocurrió un error en el servidor. Comuníquese con el administrador");
+            }
+
+        });
+
+
+
     });
 
-    $("#btnAgregarCliente").click(function ()
-    { 
+    $("#btnAgregarCliente").click(function () {
         var myModal = new bootstrap.Modal(document.getElementById('modalRegistroCliente'));
         myModal.show();
     });
 
 
     CargarListadoCliente();
-    function CargarListadoCliente()
-    {
+    function CargarListadoCliente() {
         $.ajax({
             type: "GET",
             url: '@Url.Action("Listado","Customer", new {Area = "Marketing"})',
             cache: false,
-            success: function(dataHTML){
+            success: function (dataHTML) {
                 $("#divListadoClientes").html(dataHTML);
             }
         });
